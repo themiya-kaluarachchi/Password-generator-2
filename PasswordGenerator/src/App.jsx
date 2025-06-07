@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
@@ -8,6 +8,8 @@ function App() {
   const [numberAllowed, setNumberAllowed] = useState(false)
   const [charAllowed, setCharAllowed] = useState(false)
   const [password, setPassword] = useState('')
+
+  const passwordRef = useRef(null)
 
 const generatePassword = useCallback(() => {
   let pass = ""
@@ -25,10 +27,17 @@ const generatePassword = useCallback(() => {
 
   setPassword(pass)
 }, [length, numberAllowed, charAllowed])
+
+  const copyPasswordToClipboard = () => {
+    window.navigator.clipboard.writeText(password)
+    passwordRef.current?.select()
+  }
    
   useEffect (() => {
     generatePassword()
   }, [length, numberAllowed, charAllowed])
+
+
 
   return (
     <>
@@ -42,9 +51,11 @@ const generatePassword = useCallback(() => {
           className='outline-none w-full py-1 px-3'
           placeholder='Password'
           readOnly
+          ref={passwordRef}
         />
 
           <button
+          onClick={copyPasswordToClipboard}
           className='outline-none bg-blue-700 text-white px-3 py-0.5 shrink-0'
           >Copy</button>
         </div>
